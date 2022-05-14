@@ -1526,8 +1526,8 @@ h1 {
   display: flex;
   justify-content: center;
   align-items: center;
-  overflow: hidden;
-  background: url("../image/hero-1.png");
+  overflow: hidden; /* image/hero-1.png */
+  background: url("https://s1.328888.xyz/2022/05/14/qDp0S.png");
   background-size: cover;
 }
 
