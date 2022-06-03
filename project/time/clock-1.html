@@ -1,0 +1,54 @@
+<html>
+<head>
+</head>
+
+<body>
+    <div id="clock1">11:18:48:734</div>
+
+    <style>
+        #clock1 {
+          color: black;
+          background: white;
+          display: inline-block;
+          margin: 1px;
+          padding: 0px;
+          font: 5em consolas, monospace;
+          border: solid blueviolet 5px;
+          border-radius: 10px;
+        }
+    </style>
+
+    <script>
+        var clocks = ["clock1"];
+        var clock_now = 0;
+        
+        function display_time() {
+          var now = new Date();
+          var hh = now.getHours();
+          var mm = now.getMinutes();
+          var ss = now.getSeconds();
+          var ms = now.getMilliseconds();
+          hh = check(hh);
+          mm = check(mm);
+          ss = check(ss);
+          ms = ms.toString().padStart(3,'0');
+          
+          document.getElementById(clocks[clock_now]).innerHTML = hh + ":" + mm + ":" + ss + ":" + ms;
+          clock_now += 1;
+          if (clock_now == clocks.length) {
+            clock_now = 0;
+          }
+        
+          requestAnimationFrame(display_time)
+        }
+        
+        function check(a) {
+          if (a < 10) return "0"+ a;
+          else return a;
+        }
+        requestAnimationFrame(display_time)
+    </script>
+
+</body>
+
+</html>
