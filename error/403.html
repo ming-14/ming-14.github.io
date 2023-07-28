@@ -3,24 +3,24 @@
 
     <head>
         <meta charset="UTF-8">
-        <title>Go 403</title>
+        <标题>Go 403</标题>
         <script src="/error/403/403list.js"></script>
         <script>
             //生成从minNum到maxNum的随机数
-            function randomNum(minNum,maxNum){switch(arguments.length){case 1:return parseInt(Math.random()*minNum+1,10);break;case 2:return parseInt(Math.random()*(maxNum-minNum+1)+minNum,10);break;default:return 0;break}}
+            function randomNum(minNum,maxNum){switch(arguments.length){case 1:return parseInt(Math.random()*minNum+1,10);break;case 2:return parseInt(Math.random()*(maxNum-minNum+1)+minNum,10);break;默认:return 0;break}}
             //是否是移动设备
-            function isMobileDevices(){var os=new Array("Android","iPhone","Windows Phone","iPod","BlackBerry","MeeGo","SymbianOS");var info=navigator.userAgent;var len=os.length;for(var i=0;i<len;i++){if(info.indexOf(os[i])>0){return true}}return false}
+            function isMobileDevices(){var os=新建 Array("Android","iPhone","Windows Phone","iPod","BlackBerry","MeeGo","SymbianOS");var info=navigator.userAgent;var len=os.length;for(var i=0;i<len;i++){if(info.indexOf(os[i])>0){return true}}return false}
             function Go403()
             {
                 if (isMobileDevices())
                 {
                     var Gmodel = randomNum( 0, MobileDevices.length-1 );
-                    window.location.href = MobileDevices[Gmodel];
+                    window.位置。href = MobileDevices[Gmodel];
                 }
                 else
                 {
                     var Gmodel = randomNum( 0, Computer.length-1 );
-                    window.location.href = Computer[Gmodel];
+                    window.位置。href = Computer[Gmodel];
                 }
             }
 
@@ -28,9 +28,9 @@
         </script>
     </head>
 
-    <body>
+    <内容>
     <button onclick="Go403();"
-                type="button" 
+                类型="button" 
                 id="addMusic" 
                 style="background-color: #f1f1f1;
                        color: black;
