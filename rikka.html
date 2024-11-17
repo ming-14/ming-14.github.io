@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="utf-8">
+    <title>loading...</title>
+    <link rel="stylesheet" type="text/css" href="../public/css/main.js">
+</head>
+<body>
+    <p id="loading" style="display:block">
+        loading...
+    </p>
+    
+    <div id="md-title" style="display:none">
+基于 OpenCV の黑板识别程序
+    </div>
+    
+    <div id="md-view" style="display:none">
+# 基于 OpenCV の黑板识别程序
+
+<img src="./public/Python.png" alt="Python" style="zoom:25%;" />
+
+## 前言
+
+从0开始学习图像识别，一天极限手搓，边学边做T_T
+
+部分内容在学习过程使用到了AI
+
+基本就是一个测颜色的小软件
+
+就这样了，后续也不想改了
+
+放 Github 上面只是为了 backup，希望没人看，不知道会不会成为黑历史 :sweat:，大佬看着玩就好
+
+Python Logo 来自于 [SAWARATSUKI の Github]([SAWARATSUKI (SAWARATSUKI) (github.com)](https://github.com/SAWARATSUKI))
+
+---
+
+写这个程序主要因为觉得某人の研习——全自动黑板擦很好玩
+
+虽然...确实有点土，但是还是很期待有一个小车在黑板上跑来跑去
+
+现在做嵌入式都这么高级了吗？用集成化超高的 Micro:bit。当然，最nb的当然是老师帮忙（dai）做:label:
+
+---
+
+注意：本程序仅仅是演示，在具体项目中实施仍需完善代码
+
+
+
+## 环境
+
+Python
+
+​		Windows 7 x64：https://mirrors.huaweicloud.com/python/3.8.9/python-3.8.9-amd64.exe
+
+​		Windows 10 及以上：https://mirrors.huaweicloud.com/python/3.9.9/python-3.9.9-amd64.exe
+
+​		OpenCV：`pip install -i https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple opencv-python`
+
+
+
+## 原理
+
+打开摄像头，循环读取每一帧，然后对每一帧筛颜色，去噪，膨胀。接着画框框，筛框框。再对框框边缘识别
+
+
+
+## 代码
+
+```python
+# +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
+# 许可证：The MIT License
+# time: 2024/11
+# version: 1.0
+# +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
+import cv2
+import numpy as np
+
+# 用掩模筛颜色，所以要设阈值
+# [35, 50, 50]，[95, 255, 255] 数据是深绿色（黑板颜色）范围，根据需要自行修改
+c1 = int(input("请输入低阈值（-1为默认）："))
+c2 = int(input("请输入高阈值（-1为默认）："))
+
+if c1 == -1:
+    c1 = [35, 50, 50]
+if c2 == -1:
+    c2 = [95, 255, 255]
+
+print(c1,"\n",c2)
+
+#################
+
+# 打开摄像头
+cap = cv2.VideoCapture(0)
+
+# 检查摄像头是否成功打开
+if not cap.isOpened():
+    print("无法打开摄像头")
+    exit()
+
+while True:
+    ret, frame = cap.read()
+    if not ret:
+        print("无法读取视频帧")
+        break
+
+    # 读取图片，image 就是后面处理的图像
+    image = frame
+    # 转换为HSV色彩空间
+    hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
+
+    # 设置阈值
+    lower_green = np.array(c1)  # 低
+    upper_green = np.array(c2)  # 高
+
+    # 创建掩模
+    mask = cv2.inRange(hsv, lower_green, upper_green)
+
+    # 去噪声和增强黑板轮廓
+    kernel = np.ones((5, 5), np.uint8)
+    morphed = cv2.morphologyEx(mask, cv2.MORPH_CLOSE, kernel)
+    # 去除小区域
+    kernel_open = np.ones((5, 5), np.uint8)
+    morphed = cv2.morphologyEx(morphed, cv2.MORPH_OPEN, kernel_open)
+    
+    cv2.imshow('remove', morphed) # 展示处理并二值后的图片
+
+    # 找轮廓
+    contours, _ = cv2.findContours(morphed, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+
+    # 遍历所有轮廓并绘制边界框
+    for contour in contours:
+        # 计算每个轮廓的面积
+        area = cv2.contourArea(contour)
+        x, y, w, h = cv2.boundingRect(contour)
+
+        # 过滤掉不符合条件的轮廓
+        if area > 1000:  # 最小轮廓面积
+            # 绘矩形框
+            cv2.rectangle(image, (x, y), (x + w, y + h), (0, 255, 0), 2)
+
+
+    # 遍历所有框起来的地方，使用边缘检测提取粉笔字
+    for contour in contours:
+        area = cv2.contourArea(contour)
+        if area > 500:  # 过滤掉较小的轮廓
+            x, y, w, h = cv2.boundingRect(contour)
+
+            # 提取小黑板区域
+            blackboard_region = image[y:y + h, x:x + w]
+            gray_region = cv2.cvtColor(blackboard_region, cv2.COLOR_BGR2GRAY)
+
+            # 使用Canny边缘检测提取粉笔字
+            edges = cv2.Canny(gray_region, 100, 200)
+
+            # 将边缘图绘制到原图上
+            # 创建一个与原图相同的空白图像
+            colored_edges = cv2.cvtColor(edges, cv2.COLOR_GRAY2BGR)
+        
+            # 叠加边缘
+            image[y:y + h, x:x + w] = cv2.addWeighted(image[y:y + h, x:x + w], 0.3, colored_edges, 0.7, 0)
+
+    cv2.imshow('edges', image) # result
+    
+    # 按 'q' 键退出
+    if cv2.waitKey(1) & 0xFF == ord('q'):
+        break
+
+# 释放摄像头资源
+cap.release()
+# 关闭所有 OpenCV 窗口
+cv2.destroyAllWindows()
+```
+
+
+
+## Example
+
+![example](./public/example.png)
+    </div>
+    
+<script src="./public/js/marked.min.js"></script>
+<script src="./public/js/init.js"></script>
+
+</body>
+</html>
