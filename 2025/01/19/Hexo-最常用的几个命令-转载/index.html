@@ -1,0 +1,233 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"><meta name="author" content="Rikka"><meta name="renderer" content="webkit"><meta name="copyright" content="Rikka"><meta name="keywords" content="Rikka World"><meta name="description" content=""><meta name="Cache-Control" content="no-cache"><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><title>Hexo 最常用的几个命令 转载 · Rikka's Blog</title><link rel="stylesheet" href="/css/style.css?v=2018.7.9"><link rel="stylesheet" href="/css/animation.css?v=2018.7.9"><link rel="icon" href="/img/assets/favicon.ico"><link rel="stylesheet" href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css?version=1.5.6"><!-- scripts--><script>(function( w ){
+  "use strict";
+  // rel=preload support test
+  if( !w.loadCSS ){
+    w.loadCSS = function(){};
+  }
+  // define on the loadCSS obj
+  var rp = loadCSS.relpreload = {};
+  // rel=preload feature support test
+  // runs once and returns a function for compat purposes
+  rp.support = (function(){
+    var ret;
+    try {
+      ret = w.document.createElement( "link" ).relList.supports( "preload" );
+    } catch (e) {
+      ret = false;
+    }
+    return function(){
+      return ret;
+    };
+  })();
+
+  // if preload isn't supported, get an asynchronous load by using a non-matching media attribute
+  // then change that media back to its intended value on load
+  rp.bindMediaToggle = function( link ){
+    // remember existing media attr for ultimate state, or default to 'all'
+    var finalMedia = link.media || "all";
+
+    function enableStylesheet(){
+      link.media = finalMedia;
+    }
+
+    // bind load handlers to enable media
+    if( link.addEventListener ){
+      link.addEventListener( "load", enableStylesheet );
+    } else if( link.attachEvent ){
+      link.attachEvent( "onload", enableStylesheet );
+    }
+
+    // Set rel and non-applicable media type to start an async request
+    // note: timeout allows this to happen async to let rendering continue in IE
+    setTimeout(function(){
+      link.rel = "stylesheet";
+      link.media = "only x";
+    });
+    // also enable media after 3 seconds,
+    // which will catch very old browsers (android 2.x, old firefox) that don't support onload on link
+    setTimeout( enableStylesheet, 3000 );
+  };
+
+  // loop through link elements in DOM
+  rp.poly = function(){
+    // double check this to prevent external calls from running
+    if( rp.support() ){
+      return;
+    }
+    var links = w.document.getElementsByTagName( "link" );
+    for( var i = 0; i < links.length; i++ ){
+      var link = links[ i ];
+      // qualify links to those with rel=preload and as=style attrs
+      if( link.rel === "preload" && link.getAttribute( "as" ) === "style" && !link.getAttribute( "data-loadcss" ) ){
+        // prevent rerunning on link
+        link.setAttribute( "data-loadcss", true );
+        // bind listeners to toggle media back
+        rp.bindMediaToggle( link );
+      }
+    }
+  };
+
+  // if unsupported, run the polyfill
+  if( !rp.support() ){
+    // run once at least
+    rp.poly();
+
+    // rerun poly on an interval until onload
+    var run = w.setInterval( rp.poly, 500 );
+    if( w.addEventListener ){
+      w.addEventListener( "load", function(){
+        rp.poly();
+        w.clearInterval( run );
+      } );
+    } else if( w.attachEvent ){
+      w.attachEvent( "onload", function(){
+        rp.poly();
+        w.clearInterval( run );
+      } );
+    }
+  }
+
+
+  // commonjs
+  if( typeof exports !== "undefined" ){
+    exports.loadCSS = loadCSS;
+  }
+  else {
+    w.loadCSS = loadCSS;
+  }
+}( typeof global !== "undefined" ? global : this ) );</script><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js" defer></script><script src="/js/main.js?v=2018.7.9" defer></script><!-- fancybox--><link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'"><script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js" defer></script><!-- busuanzi--><meta name="generator" content="Hexo 7.3.0"></head><body><section class="profile-close" id="cxo-profile"><div class="profile-avatar"><i class="fa fa-caret-left"></i><img src="/img/assets/rikka.jpg"></div><!--.profile-saying
+  i.fa.fa-comment
+  .saying--><div class="cxo-profile-inner"><div class="profile-name">Rikka</div><div class="read-progress"></div></div></section><header id="cxo-intro" style="height: 70vh;background-image: url(/img/intro/index-bg.png);"><nav id="cxo-intro-nav"><section><div class="intro-nav-title"><a href="/">Rikka's Blog</a></div><div class="intro-nav-label-box"><a href="/">Home</a><a href="/about/">About</a><a href="/archives/">Archives</a><a href="/tags/">Tags</a></div><i class="fa fa-bars intro-nav-menu"><div class="intro-nav-drop"><a href="/">Home</a><a href="/about/">About</a><a href="/archives/">Archives</a><a href="/tags/">Tags</a></div></i><div class="clear"></div></section></nav><h1 class="post-title">Hexo 最常用的几个命令 转载</h1><div class="post-intros"><div class="post-intro-meta"><span class="post-intro-time"><i class="post-intro-calendar fa fa-calendar"></i><span>2025-01-19</span></span></div></div></header><article class="cxo-up" id="cxo-content-outer"><section id="cxo-content-inner"><article class="article-entry" id="post"><blockquote>
+<p>Hexo 约有二十个命令，但普通用户经常使用的大概只有下列几个:</p>
+</blockquote>
+<h2 id="hexo-s"><a href="#hexo-s" class="headerlink" title="hexo s"></a>hexo s</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo s</span><br></pre></td></tr></table></figure>
+
+<p>启动本地服务器，用于预览主题。默认地址： <a target="_blank" rel="noopener" href="http://localhost:4000/">http://localhost:4000/</a></p>
+<ul>
+<li><code>hexo s</code> 是 <code>hexo server</code> 的缩写，命令效果一致；</li>
+<li>预览的同时可以修改文章内容或主题代码，保存后刷新页面即可；</li>
+<li>对 Hexo 根目录 <code>_config.yml</code> 的修改，需要重启本地服务器后才能预览效果。</li>
+</ul>
+<h2 id="hexo-n"><a href="#hexo-n" class="headerlink" title="hexo n"></a>hexo n</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo n &quot;学习笔记  六&quot;</span><br></pre></td></tr></table></figure>
+
+<p>新建一篇标题为 <code>学习笔记 六</code> 的文章，因为标题里有空格，所以加上了引号。</p>
+<ul>
+<li>文章标题可以在对应 md 文件里改，新建时标题可以写的简单些；</li>
+<li><code>hexo n</code> 是 <code>hexo new</code> 的缩写，命令效果一致。</li>
+</ul>
+<h3 id="文章可以拥有如下属性："><a href="#文章可以拥有如下属性：" class="headerlink" title="文章可以拥有如下属性："></a>文章可以拥有如下属性：</h3><table>
+<thead>
+<tr>
+<th>-</th>
+<th>Setting</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>layout</td>
+<td>Layout</td>
+<td>post或page</td>
+</tr>
+<tr>
+<td>2</td>
+<td>title</td>
+<td>文章的标题</td>
+<td></td>
+</tr>
+<tr>
+<td>3</td>
+<td>date</td>
+<td>创建日期</td>
+<td>文件的创建日期</td>
+</tr>
+<tr>
+<td>4</td>
+<td>updated</td>
+<td>修改日期</td>
+<td>文件的修改日期</td>
+</tr>
+<tr>
+<td>5</td>
+<td>comments</td>
+<td>是否开启评论</td>
+<td>true</td>
+</tr>
+<tr>
+<td>6</td>
+<td>tags</td>
+<td>标签</td>
+<td></td>
+</tr>
+<tr>
+<td>7</td>
+<td>categories</td>
+<td>分类</td>
+<td></td>
+</tr>
+<tr>
+<td>8</td>
+<td>permalink</td>
+<td>url中的名字</td>
+<td>文件名</td>
+</tr>
+</tbody></table>
+<p>动态博客中通过发布文章页面设置的各种属性，在hexo里要这样设置。</p>
+<h2 id="hexo-d"><a href="#hexo-d" class="headerlink" title="hexo d"></a>hexo d</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo d</span><br></pre></td></tr></table></figure>
+
+<p>自动生成网站静态文件，并部署到设定的仓库。</p>
+<ul>
+<li><code>hexo d</code> 是 <code>hexo deploy</code> 的缩写，命令效果一致。</li>
+</ul>
+<h2 id="hexo-clean"><a href="#hexo-clean" class="headerlink" title="hexo clean"></a>hexo clean</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo clean</span><br></pre></td></tr></table></figure>
+
+<p>清除缓存文件 <code>db.json</code> 和已生成的静态文件 <code>public</code>。</p>
+<ul>
+<li>网站显示异常时可以执行这条命令试试。</li>
+</ul>
+<h2 id="hexo-g"><a href="#hexo-g" class="headerlink" title="hexo g"></a>hexo g</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo g</span><br></pre></td></tr></table></figure>
+
+<p>生成网站静态文件到默认设置的 <code>public</code> 文件夹。</p>
+<ul>
+<li>便于查看网站生成的静态文件或者手动部署网站；</li>
+<li>如果使用自动部署，不需要先执行该命令；</li>
+<li><code>hexo g</code> 是 <code>hexo generate</code> 的缩写，命令效果一致。</li>
+</ul>
+<h2 id="hexo-n-page"><a href="#hexo-n-page" class="headerlink" title="hexo n page"></a>hexo n page</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo n page aboutme</span><br></pre></td></tr></table></figure>
+
+<p>新建一个标题为 <code>aboutme</code> 的页面，默认链接地址为 <code>主页地址/aboutme/</code></p>
+<ul>
+<li>标题可以为中文，但一般习惯用英文；</li>
+<li>页面标题和文章一样可以随意修改；</li>
+<li>页面不会出现在首页文章列表和归档中，也不支持设置分类和标签。</li>
+</ul>
+<h2 id="常用组合"><a href="#常用组合" class="headerlink" title="常用组合"></a>常用组合</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">hexo clean &amp;&amp; hexo s</span><br><span class="line">hexo clean &amp;&amp; hexo d</span><br></pre></td></tr></table></figure>
+
+<p>可以用输入法等软件为这些命令设置快捷键，方便调用。</p>
+<h2 id="草稿"><a href="#草稿" class="headerlink" title="草稿"></a>草稿</h2><p>草稿相当于很多博客都有的“私密文章”功能。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new draft &quot;new draft&quot;</span><br></pre></td></tr></table></figure>
+
+<p>会在source&#x2F;_drafts目录下生成一个new-draft.md文件。但是这个文件不被显示在页面上，链接也访问不到。也就是说如果你想把某一篇文章移除显示，又不舍得删除，可以把它移动到_drafts目录之中。</p>
+<ul>
+<li>如果你希望强行预览草稿，更改配置文件：</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">render_drafts: true</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>或者，如下方式启动server：</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server --drafts</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>下面这条命令可以把草稿变成文章，或者页面：</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo publish [layout] &lt;filename&gt;</span><br></pre></td></tr></table></figure>
+
+<h2 id="相关说明"><a href="#相关说明" class="headerlink" title="相关说明"></a>相关说明</h2><ul>
+<li>以上命令使用基于 Hexo 3.1.1 版本；</li>
+<li>需要删掉用命令新建的文章或页面时，只需要进入 Hexo 根目录下的 <code>source</code> 文件夹，删除对应文件或文件夹即可；</li>
+<li>更多命令用法请查询 <a target="_blank" rel="noopener" href="https://hexo.io/zh-cn/docs/commands.html">官方文档</a>。</li>
+</ul>
+<p>最后编辑于 2017.12.04 01:42:16</p>
+</article><!-- lincense--><div class="post-paginator"><a class="prevSlogan" href="/2025/01/19/microbit_parkour/" title="microbit 的跑酷小游戏"><span>< PreviousPost</span><br><span class="prevTitle">microbit 的跑酷小游戏</span></a><div class="clear"></div></div><div id="comment"></div></section></article><footer id="cxo-footer-outer"><div id="cxo-footer-inner"><p class="footer-container"><span>Site by </span><a target="_blank" rel="noopener" href="http://hexo.io"><span>Hexo</span></a><span> | theme </span><a target="_blank" rel="noopener" href="https://github.com/Longlongyu/hexo-theme-Cxo"><span>Cxo</span></a></p><p class="footer-container"><span> Copyright © 2025 Rikka From github/ming-14</span></p></div></footer><!-- catelog--><div class="toc-wrapper" style="top: 70vh;"><div class="toc-catalog"><i class="fa fa-list"> </i><span>CATALOG</span></div><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#hexo-s"><span class="toc-number">1.</span> <span class="toc-text">hexo s</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#hexo-n"><span class="toc-number">2.</span> <span class="toc-text">hexo n</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%87%E7%AB%A0%E5%8F%AF%E4%BB%A5%E6%8B%A5%E6%9C%89%E5%A6%82%E4%B8%8B%E5%B1%9E%E6%80%A7%EF%BC%9A"><span class="toc-number">2.1.</span> <span class="toc-text">文章可以拥有如下属性：</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#hexo-d"><span class="toc-number">3.</span> <span class="toc-text">hexo d</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#hexo-clean"><span class="toc-number">4.</span> <span class="toc-text">hexo clean</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#hexo-g"><span class="toc-number">5.</span> <span class="toc-text">hexo g</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#hexo-n-page"><span class="toc-number">6.</span> <span class="toc-text">hexo n page</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B8%B8%E7%94%A8%E7%BB%84%E5%90%88"><span class="toc-number">7.</span> <span class="toc-text">常用组合</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%8D%89%E7%A8%BF"><span class="toc-number">8.</span> <span class="toc-text">草稿</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%9B%B8%E5%85%B3%E8%AF%B4%E6%98%8E"><span class="toc-number">9.</span> <span class="toc-text">相关说明</span></a></li></ol></div><!-- top--><i class="fa fa-arrow-up close" id="go-up" aria-hidden="true"></i></body></html>

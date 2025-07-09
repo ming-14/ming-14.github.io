@@ -1,0 +1,160 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"><meta name="author" content="Rikka"><meta name="renderer" content="webkit"><meta name="copyright" content="Rikka"><meta name="keywords" content="Rikka World"><meta name="description" content=""><meta name="Cache-Control" content="no-cache"><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><title>在 Android 上编写C语言 · Rikka's Blog</title><link rel="stylesheet" href="/css/style.css?v=2018.7.9"><link rel="stylesheet" href="/css/animation.css?v=2018.7.9"><link rel="icon" href="/img/assets/favicon.ico"><link rel="stylesheet" href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css?version=1.5.6"><!-- scripts--><script>(function( w ){
+  "use strict";
+  // rel=preload support test
+  if( !w.loadCSS ){
+    w.loadCSS = function(){};
+  }
+  // define on the loadCSS obj
+  var rp = loadCSS.relpreload = {};
+  // rel=preload feature support test
+  // runs once and returns a function for compat purposes
+  rp.support = (function(){
+    var ret;
+    try {
+      ret = w.document.createElement( "link" ).relList.supports( "preload" );
+    } catch (e) {
+      ret = false;
+    }
+    return function(){
+      return ret;
+    };
+  })();
+
+  // if preload isn't supported, get an asynchronous load by using a non-matching media attribute
+  // then change that media back to its intended value on load
+  rp.bindMediaToggle = function( link ){
+    // remember existing media attr for ultimate state, or default to 'all'
+    var finalMedia = link.media || "all";
+
+    function enableStylesheet(){
+      link.media = finalMedia;
+    }
+
+    // bind load handlers to enable media
+    if( link.addEventListener ){
+      link.addEventListener( "load", enableStylesheet );
+    } else if( link.attachEvent ){
+      link.attachEvent( "onload", enableStylesheet );
+    }
+
+    // Set rel and non-applicable media type to start an async request
+    // note: timeout allows this to happen async to let rendering continue in IE
+    setTimeout(function(){
+      link.rel = "stylesheet";
+      link.media = "only x";
+    });
+    // also enable media after 3 seconds,
+    // which will catch very old browsers (android 2.x, old firefox) that don't support onload on link
+    setTimeout( enableStylesheet, 3000 );
+  };
+
+  // loop through link elements in DOM
+  rp.poly = function(){
+    // double check this to prevent external calls from running
+    if( rp.support() ){
+      return;
+    }
+    var links = w.document.getElementsByTagName( "link" );
+    for( var i = 0; i < links.length; i++ ){
+      var link = links[ i ];
+      // qualify links to those with rel=preload and as=style attrs
+      if( link.rel === "preload" && link.getAttribute( "as" ) === "style" && !link.getAttribute( "data-loadcss" ) ){
+        // prevent rerunning on link
+        link.setAttribute( "data-loadcss", true );
+        // bind listeners to toggle media back
+        rp.bindMediaToggle( link );
+      }
+    }
+  };
+
+  // if unsupported, run the polyfill
+  if( !rp.support() ){
+    // run once at least
+    rp.poly();
+
+    // rerun poly on an interval until onload
+    var run = w.setInterval( rp.poly, 500 );
+    if( w.addEventListener ){
+      w.addEventListener( "load", function(){
+        rp.poly();
+        w.clearInterval( run );
+      } );
+    } else if( w.attachEvent ){
+      w.attachEvent( "onload", function(){
+        rp.poly();
+        w.clearInterval( run );
+      } );
+    }
+  }
+
+
+  // commonjs
+  if( typeof exports !== "undefined" ){
+    exports.loadCSS = loadCSS;
+  }
+  else {
+    w.loadCSS = loadCSS;
+  }
+}( typeof global !== "undefined" ? global : this ) );</script><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js" defer></script><script src="/js/main.js?v=2018.7.9" defer></script><!-- fancybox--><link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'"><script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js" defer></script><!-- busuanzi--><meta name="generator" content="Hexo 7.3.0"></head><body><section class="profile-close" id="cxo-profile"><div class="profile-avatar"><i class="fa fa-caret-left"></i><img src="/img/assets/rikka.jpg"></div><!--.profile-saying
+  i.fa.fa-comment
+  .saying--><div class="cxo-profile-inner"><div class="profile-name">Rikka</div><div class="read-progress"></div></div></section><header id="cxo-intro" style="height: 70vh;background-image: url(/img/intro/index-bg.png);"><nav id="cxo-intro-nav"><section><div class="intro-nav-title"><a href="/">Rikka's Blog</a></div><div class="intro-nav-label-box"><a href="/">Home</a><a href="/about/">About</a><a href="/archives/">Archives</a><a href="/tags/">Tags</a></div><i class="fa fa-bars intro-nav-menu"><div class="intro-nav-drop"><a href="/">Home</a><a href="/about/">About</a><a href="/archives/">Archives</a><a href="/tags/">Tags</a></div></i><div class="clear"></div></section></nav><h1 class="post-title">在 Android 上编写C语言</h1><div class="post-intros"><div class="post-intro-meta"><span class="post-intro-time"><i class="post-intro-calendar fa fa-calendar"></i><span>2025-01-19</span></span><span class="post-intro-tags"><a class="intro-tag fa fa-tag" href="javascript:void(0)" date-tags="archives-old"> archives-old</a></span></div></div></header><article class="cxo-up" id="cxo-content-outer"><section id="cxo-content-inner"><article class="article-entry" id="post"><p><strong>作于 Aug 3, 2024, 6:56 PM GMT+8 或之前</strong><br><strong>封存于 2025</strong></p>
+<h2 id="在-Android-上编写C语言"><a href="#在-Android-上编写C语言" class="headerlink" title="在-Android-上编写C语言"></a>在-Android-上编写C语言</h2><p>本作主要推荐相关的app</p>
+<h3 id="c4droid-🎁🎁🎁"><a href="#c4droid-🎁🎁🎁" class="headerlink" title="c4droid 🎁🎁🎁 "></a>c4droid 🎁🎁🎁 <img src="/image/在-Android-上编写C语言/c4droidLOGO.jpg" alt="c4droidLOGO" style="max-width: 10%; height: auto;"  /></h3><img src="/image/在-Android-上编写C语言/c4droid.jpg" alt="c4droid 主界面" style="max-width: 60%; height: auto;" />
+
+<p>优点</p>
+<ul>
+<li>补全功能完善</li>
+<li>兼容性强（或许）</li>
+<li>编译器设置丰富</li>
+</ul>
+<p>缺点</p>
+<ul>
+<li>输入时无符号辅助</li>
+</ul>
+<h3 id="CPP-N-IDE-🎁🎁"><a href="#CPP-N-IDE-🎁🎁" class="headerlink" title="CPP N-IDE 🎁🎁"></a>CPP N-IDE 🎁🎁</h3><img src="/image/在-Android-上编写C语言/CPP_N-IDE.jpg" alt="CPP_N-IDE 主界面" style="max-width: 60%; height: auto;" />
+
+<p>优点</p>
+<ul>
+<li>纯粹</li>
+</ul>
+<p>缺点</p>
+<ul>
+<li>英文</li>
+<li>符号单列</li>
+<li>没有补全等功能</li>
+</ul>
+<h3 id="Cxxdroid-🎁🎁🎁🎁"><a href="#Cxxdroid-🎁🎁🎁🎁" class="headerlink" title="Cxxdroid 🎁🎁🎁🎁 "></a>Cxxdroid 🎁🎁🎁🎁 <img src="/image/在-Android-上编写C语言/Cxxdroid LOGO.png" alt="Cxxdroid LOGO" style="max-width: 10%; height: auto;"  /></h3><img src="/image/在-Android-上编写C语言/Cxxdroid.jpg" alt="Cxxdroid" style="max-width: 60%; height: auto;"  />
+
+<p>优点</p>
+<ul>
+<li>编译前纠错</li>
+<li>安全键盘</li>
+</ul>
+<p>缺点</p>
+<ul>
+<li>符号辅助反人类</li>
+<li>卡卡的</li>
+</ul>
+<h3 id="C语言编译器-By-🎁🎁🎁🎁🎁"><a href="#C语言编译器-By-🎁🎁🎁🎁🎁" class="headerlink" title="C语言编译器 By 🎁🎁🎁🎁🎁 "></a>C语言编译器 By 🎁🎁🎁🎁🎁 <img src="/image/在-Android-上编写C语言/C语言编译器By_LOGO.png" alt="C语言编译器By_LOGO" style="max-width: 10%; height: auto;" /></h3><img src="/image/在-Android-上编写C语言/C语言编译器By.jpg" alt="C语言编译器By 主界面" style="max-width: 60%; height: auto;"  />
+
+<p>优点</p>
+<ul>
+<li>舒服</li>
+<li>国人开发，符合使用习惯</li>
+</ul>
+<p>缺点</p>
+<ul>
+<li>很棒</li>
+</ul>
+<h3 id="C语言编译器IDE-🎁🎁🎁"><a href="#C语言编译器IDE-🎁🎁🎁" class="headerlink" title="C语言编译器IDE 🎁🎁🎁 "></a>C语言编译器IDE 🎁🎁🎁 <img src="/image/在-Android-上编写C语言/C语言编译器IDE_LOGO.png" alt="C语言编译器IDE LOGO" style="max-width: 10%; height: auto;" /></h3><img src="/image/在-Android-上编写C语言/C语言编译器IDE.jpg" alt="C语言编译器IDE 主界面" style="max-width: 60%; height: auto;"  />
+
+<ul>
+<li>舒服，丝滑</li>
+<li>国人开发，符合使用习惯</li>
+<li>编译前纠错</li>
+</ul>
+<p>缺点</p>
+<ul>
+<li><strong>有严重的广告</strong></li>
+</ul>
+</article><!-- lincense--><div class="post-paginator"><a class="prevSlogan" href="/2025/01/19/%E4%BF%A1%E6%81%AF%E8%AF%BE%E5%86%85%E7%BD%91%E6%90%AD%E5%BB%BA%E6%B8%B8%E6%88%8F%E5%B9%B3%E5%8F%B0/" title="信息课内网搭建游戏平台"><span>< PreviousPost</span><br><span class="prevTitle">信息课内网搭建游戏平台</span></a><a class="nextSlogan" href="/2025/01/19/ban%E6%8E%89%E6%9C%BA%E6%88%BF%E7%9A%84%E6%8E%A7%E5%88%B6/" title="ban掉机房的控制"><span>NextPost ></span><br><span class="nextTitle">ban掉机房的控制</span></a><div class="clear"></div></div><div id="comment"></div></section></article><footer id="cxo-footer-outer"><div id="cxo-footer-inner"><p class="footer-container"><span>Site by </span><a target="_blank" rel="noopener" href="http://hexo.io"><span>Hexo</span></a><span> | theme </span><a target="_blank" rel="noopener" href="https://github.com/Longlongyu/hexo-theme-Cxo"><span>Cxo</span></a></p><p class="footer-container"><span> Copyright © 2025 Rikka From github/ming-14</span></p></div></footer><!-- catelog--><div class="toc-wrapper" style="top: 70vh;"><div class="toc-catalog"><i class="fa fa-list"> </i><span>CATALOG</span></div><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9C%A8-Android-%E4%B8%8A%E7%BC%96%E5%86%99C%E8%AF%AD%E8%A8%80"><span class="toc-number">1.</span> <span class="toc-text">在-Android-上编写C语言</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#c4droid-%F0%9F%8E%81%F0%9F%8E%81%F0%9F%8E%81"><span class="toc-number">1.1.</span> <span class="toc-text">c4droid 🎁🎁🎁 </span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#CPP-N-IDE-%F0%9F%8E%81%F0%9F%8E%81"><span class="toc-number">1.2.</span> <span class="toc-text">CPP N-IDE 🎁🎁</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Cxxdroid-%F0%9F%8E%81%F0%9F%8E%81%F0%9F%8E%81%F0%9F%8E%81"><span class="toc-number">1.3.</span> <span class="toc-text">Cxxdroid 🎁🎁🎁🎁 </span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#C%E8%AF%AD%E8%A8%80%E7%BC%96%E8%AF%91%E5%99%A8-By-%F0%9F%8E%81%F0%9F%8E%81%F0%9F%8E%81%F0%9F%8E%81%F0%9F%8E%81"><span class="toc-number">1.4.</span> <span class="toc-text">C语言编译器 By 🎁🎁🎁🎁🎁 </span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#C%E8%AF%AD%E8%A8%80%E7%BC%96%E8%AF%91%E5%99%A8IDE-%F0%9F%8E%81%F0%9F%8E%81%F0%9F%8E%81"><span class="toc-number">1.5.</span> <span class="toc-text">C语言编译器IDE 🎁🎁🎁 </span></a></li></ol></li></ol></div><!-- top--><i class="fa fa-arrow-up close" id="go-up" aria-hidden="true"></i></body></html>

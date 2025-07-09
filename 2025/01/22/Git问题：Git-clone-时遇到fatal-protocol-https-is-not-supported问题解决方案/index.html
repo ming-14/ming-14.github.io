@@ -1,0 +1,141 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"><meta name="author" content="Rikka"><meta name="renderer" content="webkit"><meta name="copyright" content="Rikka"><meta name="keywords" content="Rikka World"><meta name="description" content=""><meta name="Cache-Control" content="no-cache"><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><title>Git问题：Git clone 时遇到fatal: protocol ''https'' is not supported问题解决方案 · Rikka's Blog</title><link rel="stylesheet" href="/css/style.css?v=2018.7.9"><link rel="stylesheet" href="/css/animation.css?v=2018.7.9"><link rel="icon" href="/img/assets/favicon.ico"><link rel="stylesheet" href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css?version=1.5.6"><!-- scripts--><script>(function( w ){
+  "use strict";
+  // rel=preload support test
+  if( !w.loadCSS ){
+    w.loadCSS = function(){};
+  }
+  // define on the loadCSS obj
+  var rp = loadCSS.relpreload = {};
+  // rel=preload feature support test
+  // runs once and returns a function for compat purposes
+  rp.support = (function(){
+    var ret;
+    try {
+      ret = w.document.createElement( "link" ).relList.supports( "preload" );
+    } catch (e) {
+      ret = false;
+    }
+    return function(){
+      return ret;
+    };
+  })();
+
+  // if preload isn't supported, get an asynchronous load by using a non-matching media attribute
+  // then change that media back to its intended value on load
+  rp.bindMediaToggle = function( link ){
+    // remember existing media attr for ultimate state, or default to 'all'
+    var finalMedia = link.media || "all";
+
+    function enableStylesheet(){
+      link.media = finalMedia;
+    }
+
+    // bind load handlers to enable media
+    if( link.addEventListener ){
+      link.addEventListener( "load", enableStylesheet );
+    } else if( link.attachEvent ){
+      link.attachEvent( "onload", enableStylesheet );
+    }
+
+    // Set rel and non-applicable media type to start an async request
+    // note: timeout allows this to happen async to let rendering continue in IE
+    setTimeout(function(){
+      link.rel = "stylesheet";
+      link.media = "only x";
+    });
+    // also enable media after 3 seconds,
+    // which will catch very old browsers (android 2.x, old firefox) that don't support onload on link
+    setTimeout( enableStylesheet, 3000 );
+  };
+
+  // loop through link elements in DOM
+  rp.poly = function(){
+    // double check this to prevent external calls from running
+    if( rp.support() ){
+      return;
+    }
+    var links = w.document.getElementsByTagName( "link" );
+    for( var i = 0; i < links.length; i++ ){
+      var link = links[ i ];
+      // qualify links to those with rel=preload and as=style attrs
+      if( link.rel === "preload" && link.getAttribute( "as" ) === "style" && !link.getAttribute( "data-loadcss" ) ){
+        // prevent rerunning on link
+        link.setAttribute( "data-loadcss", true );
+        // bind listeners to toggle media back
+        rp.bindMediaToggle( link );
+      }
+    }
+  };
+
+  // if unsupported, run the polyfill
+  if( !rp.support() ){
+    // run once at least
+    rp.poly();
+
+    // rerun poly on an interval until onload
+    var run = w.setInterval( rp.poly, 500 );
+    if( w.addEventListener ){
+      w.addEventListener( "load", function(){
+        rp.poly();
+        w.clearInterval( run );
+      } );
+    } else if( w.attachEvent ){
+      w.attachEvent( "onload", function(){
+        rp.poly();
+        w.clearInterval( run );
+      } );
+    }
+  }
+
+
+  // commonjs
+  if( typeof exports !== "undefined" ){
+    exports.loadCSS = loadCSS;
+  }
+  else {
+    w.loadCSS = loadCSS;
+  }
+}( typeof global !== "undefined" ? global : this ) );</script><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js" defer></script><script src="/js/main.js?v=2018.7.9" defer></script><!-- fancybox--><link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'"><script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js" defer></script><!-- busuanzi--><meta name="generator" content="Hexo 7.3.0"></head><body><section class="profile-close" id="cxo-profile"><div class="profile-avatar"><i class="fa fa-caret-left"></i><img src="/img/assets/rikka.jpg"></div><!--.profile-saying
+  i.fa.fa-comment
+  .saying--><div class="cxo-profile-inner"><div class="profile-name">Rikka</div><div class="read-progress"></div></div></section><header id="cxo-intro" style="height: 70vh;background-image: url(/img/intro/index-bg.png);"><nav id="cxo-intro-nav"><section><div class="intro-nav-title"><a href="/">Rikka's Blog</a></div><div class="intro-nav-label-box"><a href="/">Home</a><a href="/about/">About</a><a href="/archives/">Archives</a><a href="/tags/">Tags</a></div><i class="fa fa-bars intro-nav-menu"><div class="intro-nav-drop"><a href="/">Home</a><a href="/about/">About</a><a href="/archives/">Archives</a><a href="/tags/">Tags</a></div></i><div class="clear"></div></section></nav><h1 class="post-title">Git问题：Git clone 时遇到fatal: protocol ''https'' is not supported问题解决方案</h1><div class="post-intros"><div class="post-intro-meta"><span class="post-intro-time"><i class="post-intro-calendar fa fa-calendar"></i><span>2025-01-22</span></span><span class="post-intro-tags"><a class="intro-tag fa fa-tag" href="javascript:void(0)" date-tags="git,转载"> git,转载</a></span></div></div></header><article class="cxo-up" id="cxo-content-outer"><section id="cxo-content-inner"><article class="article-entry" id="post"><h1 id="Git问题：Git-clone-时遇到fatal-protocol-‘’’’https’’’’-is-not-supported问题解决方案"><a href="#Git问题：Git-clone-时遇到fatal-protocol-‘’’’https’’’’-is-not-supported问题解决方案" class="headerlink" title="Git问题：Git clone 时遇到fatal: protocol ‘’’’https’’’’ is not supported问题解决方案"></a>Git问题：Git clone 时遇到fatal: protocol ‘’’’https’’’’ is not supported问题解决方案</h1><p>转载自：&lt;<a target="_blank" rel="noopener" href="https://blog.csdn.net/jiunian_2761/article/details/100005715">Git问题：Git clone 时遇到fatal: protocol ‘’https’’ is not supported问题解决方案_fatal: protocol ‘https’ is not supported</a>&gt;</p>
+<p>这个故事告诉我们，stackoverflow好，CSDN坏</p>
+<hr>
+<h3 id="一、问题来因"><a href="#一、问题来因" class="headerlink" title="一、问题来因"></a>一、问题来因</h3><p>今天在整合项目时需要将码云上的仓库<code>clone</code>下来，在Git Bash 里执行 clone命令报错<code>protocol &#39;&#39;https&#39;&#39; is not supported</code>，经过一番查找，找到了原因，分享给大家，其实也是我们常犯的一个错误。</p>
+<h3 id="二、寻找解决方案"><a href="#二、寻找解决方案" class="headerlink" title="二、寻找解决方案"></a>二、寻找解决方案</h3><p>开始在CSDN上找各种解决办法，并没有任何成果，遇到的问题情况和我都不一样。</p>
+<p>我一直秉承的思想是问题不能只有解决了才行，我们应该去找到问题产生的原因。</p>
+<p>最后在<code>stackoverflow</code>上找到了解决方案和原因，其中是这么写到的：</p>
+<blockquote>
+<p>You tried to paste it using</p>
+<ul>
+<li>CTRL +V</li>
+</ul>
+<p>before and it didn’t work so you went ahead and pasted it with classic</p>
+<ul>
+<li>Right Click - Paste**.</li>
+</ul>
+<p>Sadly whenever you enter CTRL +V on <strong>terminal</strong> it adds</p>
+<ul>
+<li>a <strong>hidden</strong> <strong>^?</strong></li>
+</ul>
+<p>(at least on my machine it encoded like that).</p>
+<p>the character that you only appears after you</p>
+<ul>
+<li>backspace</li>
+</ul>
+<p>(go ahead an try it on git bash).</p>
+<p>So your link becomes <code>^?https://...</code></p>
+<p><strong>which is invalid.</strong></p>
+</blockquote>
+<p>什么意思呢？就是说我们在粘贴地址时使用了 <code>CTRL +V</code>, 在Git Bash中没有效果，然后我们就会使用右键菜单中的粘贴，但是不幸的是，使用 <code>CTRL +V</code>会在Git Bash 中添加一个隐藏的符号 <code>^?</code>。</p>
+<p>当你在粘贴仓库链接时使用了<code>CTRL +V</code>后</p>
+<p>在GIt Bash 中你的克隆语句可能显示是这样正常的：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git clone https:<span class="comment">//gitee.com/qianfanguojin/homework_1.git</span></span><br></pre></td></tr></table></figure>
+
+<p>但真实语句其实是这样的：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git clone ^?https:<span class="comment">//gitee.com/qianfanguojin/homework_1.git</span></span><br></pre></td></tr></table></figure>
+
+<p>链接前面多了符号，协议变成了<code>^https</code>，肯定不能克隆成功，提示协议不支持。</p>
+<h3 id="三、问题解决办法"><a href="#三、问题解决办法" class="headerlink" title="三、问题解决办法"></a>三、问题解决办法</h3><p>解决问题的办法也很简单，将使用了<code>CTRL +V</code>的克隆语句删除重新编写，但是记得粘贴链接时不要使用<code>CTRL +V</code>即可。</p>
+<p>这个问题也提醒我们不要在 命令行中乱用 <code>CTRL +V</code>或是<code>CTRL +C</code>这类快捷键，可能会出现莫名其妙的BUG。</p>
+<h3 id="四、参考链接"><a href="#四、参考链接" class="headerlink" title="四、参考链接"></a>四、参考链接</h3><p><a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/53988638/git-fatal-protocol-https-is-not-supported">https://stackoverflow.com/questions/53988638/git-fatal-protocol-https-is-not-supported</a></p>
+</article><!-- lincense--><div class="post-paginator"><a class="nextSlogan" href="/2025/01/20/hexo-%E5%86%99%E6%96%87%E7%AB%A0%E2%80%94%E2%80%94%E2%80%94%E2%80%94%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98/" title="hexo 写文章————常见问题"><span>NextPost ></span><br><span class="nextTitle">hexo 写文章————常见问题</span></a><div class="clear"></div></div><div id="comment"></div></section></article><footer id="cxo-footer-outer"><div id="cxo-footer-inner"><p class="footer-container"><span>Site by </span><a target="_blank" rel="noopener" href="http://hexo.io"><span>Hexo</span></a><span> | theme </span><a target="_blank" rel="noopener" href="https://github.com/Longlongyu/hexo-theme-Cxo"><span>Cxo</span></a></p><p class="footer-container"><span> Copyright © 2025 Rikka From github/ming-14</span></p></div></footer><!-- catelog--><div class="toc-wrapper" style="top: 70vh;"><div class="toc-catalog"><i class="fa fa-list"> </i><span>CATALOG</span></div><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Git%E9%97%AE%E9%A2%98%EF%BC%9AGit-clone-%E6%97%B6%E9%81%87%E5%88%B0fatal-protocol-%E2%80%98%E2%80%99%E2%80%99%E2%80%99https%E2%80%99%E2%80%99%E2%80%99%E2%80%99-is-not-supported%E9%97%AE%E9%A2%98%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88"><span class="toc-number">1.</span> <span class="toc-text">Git问题：Git clone 时遇到fatal: protocol ‘’’’https’’’’ is not supported问题解决方案</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E9%97%AE%E9%A2%98%E6%9D%A5%E5%9B%A0"><span class="toc-number">1.0.1.</span> <span class="toc-text">一、问题来因</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E5%AF%BB%E6%89%BE%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88"><span class="toc-number">1.0.2.</span> <span class="toc-text">二、寻找解决方案</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%89%E3%80%81%E9%97%AE%E9%A2%98%E8%A7%A3%E5%86%B3%E5%8A%9E%E6%B3%95"><span class="toc-number">1.0.3.</span> <span class="toc-text">三、问题解决办法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9B%9B%E3%80%81%E5%8F%82%E8%80%83%E9%93%BE%E6%8E%A5"><span class="toc-number">1.0.4.</span> <span class="toc-text">四、参考链接</span></a></li></ol></li></ol></li></ol></div><!-- top--><i class="fa fa-arrow-up close" id="go-up" aria-hidden="true"></i></body></html>

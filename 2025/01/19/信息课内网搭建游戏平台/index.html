@@ -1,0 +1,103 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"><meta name="author" content="Rikka"><meta name="renderer" content="webkit"><meta name="copyright" content="Rikka"><meta name="keywords" content="Rikka World"><meta name="description" content=""><meta name="Cache-Control" content="no-cache"><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><title>信息课内网搭建游戏平台 · Rikka's Blog</title><link rel="stylesheet" href="/css/style.css?v=2018.7.9"><link rel="stylesheet" href="/css/animation.css?v=2018.7.9"><link rel="icon" href="/img/assets/favicon.ico"><link rel="stylesheet" href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css?version=1.5.6"><!-- scripts--><script>(function( w ){
+  "use strict";
+  // rel=preload support test
+  if( !w.loadCSS ){
+    w.loadCSS = function(){};
+  }
+  // define on the loadCSS obj
+  var rp = loadCSS.relpreload = {};
+  // rel=preload feature support test
+  // runs once and returns a function for compat purposes
+  rp.support = (function(){
+    var ret;
+    try {
+      ret = w.document.createElement( "link" ).relList.supports( "preload" );
+    } catch (e) {
+      ret = false;
+    }
+    return function(){
+      return ret;
+    };
+  })();
+
+  // if preload isn't supported, get an asynchronous load by using a non-matching media attribute
+  // then change that media back to its intended value on load
+  rp.bindMediaToggle = function( link ){
+    // remember existing media attr for ultimate state, or default to 'all'
+    var finalMedia = link.media || "all";
+
+    function enableStylesheet(){
+      link.media = finalMedia;
+    }
+
+    // bind load handlers to enable media
+    if( link.addEventListener ){
+      link.addEventListener( "load", enableStylesheet );
+    } else if( link.attachEvent ){
+      link.attachEvent( "onload", enableStylesheet );
+    }
+
+    // Set rel and non-applicable media type to start an async request
+    // note: timeout allows this to happen async to let rendering continue in IE
+    setTimeout(function(){
+      link.rel = "stylesheet";
+      link.media = "only x";
+    });
+    // also enable media after 3 seconds,
+    // which will catch very old browsers (android 2.x, old firefox) that don't support onload on link
+    setTimeout( enableStylesheet, 3000 );
+  };
+
+  // loop through link elements in DOM
+  rp.poly = function(){
+    // double check this to prevent external calls from running
+    if( rp.support() ){
+      return;
+    }
+    var links = w.document.getElementsByTagName( "link" );
+    for( var i = 0; i < links.length; i++ ){
+      var link = links[ i ];
+      // qualify links to those with rel=preload and as=style attrs
+      if( link.rel === "preload" && link.getAttribute( "as" ) === "style" && !link.getAttribute( "data-loadcss" ) ){
+        // prevent rerunning on link
+        link.setAttribute( "data-loadcss", true );
+        // bind listeners to toggle media back
+        rp.bindMediaToggle( link );
+      }
+    }
+  };
+
+  // if unsupported, run the polyfill
+  if( !rp.support() ){
+    // run once at least
+    rp.poly();
+
+    // rerun poly on an interval until onload
+    var run = w.setInterval( rp.poly, 500 );
+    if( w.addEventListener ){
+      w.addEventListener( "load", function(){
+        rp.poly();
+        w.clearInterval( run );
+      } );
+    } else if( w.attachEvent ){
+      w.attachEvent( "onload", function(){
+        rp.poly();
+        w.clearInterval( run );
+      } );
+    }
+  }
+
+
+  // commonjs
+  if( typeof exports !== "undefined" ){
+    exports.loadCSS = loadCSS;
+  }
+  else {
+    w.loadCSS = loadCSS;
+  }
+}( typeof global !== "undefined" ? global : this ) );</script><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js" defer></script><script src="/js/main.js?v=2018.7.9" defer></script><!-- fancybox--><link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'"><script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js" defer></script><!-- busuanzi--><meta name="generator" content="Hexo 7.3.0"></head><body><section class="profile-close" id="cxo-profile"><div class="profile-avatar"><i class="fa fa-caret-left"></i><img src="/img/assets/rikka.jpg"></div><!--.profile-saying
+  i.fa.fa-comment
+  .saying--><div class="cxo-profile-inner"><div class="profile-name">Rikka</div><div class="read-progress"></div></div></section><header id="cxo-intro" style="height: 70vh;background-image: url(/img/intro/index-bg.png);"><nav id="cxo-intro-nav"><section><div class="intro-nav-title"><a href="/">Rikka's Blog</a></div><div class="intro-nav-label-box"><a href="/">Home</a><a href="/about/">About</a><a href="/archives/">Archives</a><a href="/tags/">Tags</a></div><i class="fa fa-bars intro-nav-menu"><div class="intro-nav-drop"><a href="/">Home</a><a href="/about/">About</a><a href="/archives/">Archives</a><a href="/tags/">Tags</a></div></i><div class="clear"></div></section></nav><h1 class="post-title">信息课内网搭建游戏平台</h1><div class="post-intros"><div class="post-intro-meta"><span class="post-intro-time"><i class="post-intro-calendar fa fa-calendar"></i><span>2025-01-19</span></span><span class="post-intro-tags"><a class="intro-tag fa fa-tag" href="javascript:void(0)" date-tags="archives-old"> archives-old</a></span></div></div></header><article class="cxo-up" id="cxo-content-outer"><section id="cxo-content-inner"><article class="article-entry" id="post"><p><strong>作于 Oct 16, 2022, 4:03 PM GMT+8 或之前</strong><br><strong>封存于 2025</strong></p>
+<h2 id="信息课内网搭建游戏平台"><a href="#信息课内网搭建游戏平台" class="headerlink" title="信息课内网搭建游戏平台"></a>信息课内网搭建游戏平台</h2><p><strong>1.安装XAMPP</strong><br><a target="_blank" rel="noopener" href="https://www.apachefriends.org/zh_cn/index.html">官网</a><br><a target="_blank" rel="noopener" href="https://edf6857f47ec75b11b6dd5acf2dcaa50.dlied1.cdntips.net/dl.softmgr.qq.com/original/Development/xampp-windows-x64-7.4.5-0-VC15-installer.exe">直链</a><br><a target="_blank" rel="noopener" href="https://pc.qq.com/detail/1/detail_3041.html">软件商城代管</a></p>
+<p><strong>2.放置源码</strong><br>www路径: <code>xampp\htdocs</code><br>0.<a target="_blank" rel="noopener" href="https://ghproxy.com/">github文件代理加速</a><br>1.<a target="_blank" rel="noopener" href="https://github.com/wayou/t-rex-runner">小恐龙</a>, <a target="_blank" rel="noopener" href="https://wwd.lanzouy.com/isOzY0beh12b">源代码</a><br>2.<a target="_blank" rel="noopener" href="https://github.com/zhbink/CatchThatCat">抓猫游戏</a>, <a target="_blank" rel="noopener" href="https://wwd.lanzouy.com/iw5QB0beh0oh">源代码</a><br>3.<a target="_blank" rel="noopener" href="https://github.com/ming-14/ming-14.github.io/blob/main/data/web/3D%E9%AD%94%E6%96%B9.rar">3D魔方</a>, <a target="_blank" rel="noopener" href="https://wwd.lanzouy.com/iMJCL0beh0wf">源代码</a><br>4.<a target="_blank" rel="noopener" href="https://goodidea.pages.dev/minesweeper/">扫雷</a>, <a target="_blank" rel="noopener" href="https://wwd.lanzouy.com/ix6uD0beh10j">源代码</a><br>5.<a target="_blank" rel="noopener" href="https://goodidea.pages.dev/Five-sonChess/">五子棋</a>, <a target="_blank" rel="noopener" href="https://wwd.lanzouy.com/ijijk0beh0ve">源代码</a><br>6.<a target="_blank" rel="noopener" href="https://github.com/ming-14/game">各种大游戏源码</a> </p>
+</article><!-- lincense--><div class="post-paginator"><a class="prevSlogan" href="/2025/01/19/NetBScanner-%E7%9A%84%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95/" title="NetBScanner 的使用方法"><span>< PreviousPost</span><br><span class="prevTitle">NetBScanner 的使用方法</span></a><a class="nextSlogan" href="/2025/01/19/%E5%9C%A8-Android-%E4%B8%8A%E7%BC%96%E5%86%99C%E8%AF%AD%E8%A8%80/" title="在 Android 上编写C语言"><span>NextPost ></span><br><span class="nextTitle">在 Android 上编写C语言</span></a><div class="clear"></div></div><div id="comment"></div></section></article><footer id="cxo-footer-outer"><div id="cxo-footer-inner"><p class="footer-container"><span>Site by </span><a target="_blank" rel="noopener" href="http://hexo.io"><span>Hexo</span></a><span> | theme </span><a target="_blank" rel="noopener" href="https://github.com/Longlongyu/hexo-theme-Cxo"><span>Cxo</span></a></p><p class="footer-container"><span> Copyright © 2025 Rikka From github/ming-14</span></p></div></footer><!-- catelog--><div class="toc-wrapper" style="top: 70vh;"><div class="toc-catalog"><i class="fa fa-list"> </i><span>CATALOG</span></div><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BF%A1%E6%81%AF%E8%AF%BE%E5%86%85%E7%BD%91%E6%90%AD%E5%BB%BA%E6%B8%B8%E6%88%8F%E5%B9%B3%E5%8F%B0"><span class="toc-number">1.</span> <span class="toc-text">信息课内网搭建游戏平台</span></a></li></ol></div><!-- top--><i class="fa fa-arrow-up close" id="go-up" aria-hidden="true"></i></body></html>
